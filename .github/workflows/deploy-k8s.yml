@@ -1,0 +1,44 @@
+name: Deploy to K8s (Kapsule)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "deploy/k8s/**"
+      - ".github/workflows/deploy-k8s.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "latest"
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_CONTENT }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          kubectl config current-context
+
+      - name: Create namespace if missing
+        run: kubectl apply -f deploy/k8s/namespace.yaml
+
+      - name: Apply secrets (template -> live)
+        run: |
+          # Remplace ce bloc par une création de secret depuis GitHub Secrets
+          kubectl apply -f deploy/k8s/secret-template.yaml
+
+      - name: Apply manifests
+        run: |
+          kubectl apply -f deploy/k8s/deployment.yaml
+          kubectl apply -f deploy/k8s/service.yaml
+          kubectl apply -f deploy/k8s/ingress.yaml
+          kubectl apply -f deploy/k8s/frontend-deployment.yaml
+          kubectl apply -f deploy/k8s/frontend-service.yaml
+          kubectl apply -f deploy/k8s/frontend-ingress.yaml

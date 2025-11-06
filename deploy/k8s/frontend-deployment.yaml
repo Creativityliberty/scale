@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: mon-saas-ia
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: rg.<region>.scw.cloud/<namespace>/mon-saas-ia-frontend:latest
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: scw-registry-cred
