@@ -1,0 +1,13 @@
+scw_region     = "fr-par"
+scw_zone       = "fr-par-1"
+scw_project_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+scw_namespace  = "mon-saas-ia"
+
+node_type  = "DEV1-M"
+ode_count = 2
+min_nodes  = 1
+max_nodes  = 5
+
+db_node_type  = "DB-DEV-S"
+db_password   = "CHANGE_ME_STRONG_PASSWORD"
+db_ha_enabled = false
